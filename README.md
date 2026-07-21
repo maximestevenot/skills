@@ -2,6 +2,10 @@
 
 Personal Claude Code skills marketplace — one unified product & delivery workflow, installable in every repo.
 
+These are **my personal skills**, not a general-purpose framework. Several started from ideas borrowed from other people's skillsets, then were rewritten to fit how I actually work: Linear as the source of truth, worktree-per-issue, PRD → issues → PR.
+
+They are **opinionated on purpose**. Where a choice existed, one was made rather than parameterised. Fork and adapt them — don't expect them to match your process out of the box.
+
 ## The workflow
 
 ```
@@ -23,6 +27,34 @@ Personal Claude Code skills marketplace — one unified product & delivery workf
 
 **Maintenance** (periodic): `update-deps` · `changelog` · `tech-debt` · `debug`
 **Meta**: `handoff` · `write-skill`
+
+## Skills
+
+### Delivery pipeline
+
+| Skill | What it does |
+| --- | --- |
+| `brainstorm` | Interviews you one question at a time to stress-test an idea against the codebase, then routes to a PRD or an issue. |
+| `write-prd` | Writes a PRD for a project-scale feature and publishes it to the Linear project. |
+| `create-issue` | Writes a single-deliverable Linear issue: codebase analysis, design section, acceptance criteria. |
+| `prd-to-issues` | Slices a PRD into independently-implementable issues (vertical tracer bullets). |
+| `implement-issue` | Takes an issue to a PR: worktree, branch, plan, code, checks, push, Linear updated. |
+
+### Maintenance
+
+| Skill | What it does |
+| --- | --- |
+| `debug` | Disciplined loop for bugs and perf regressions — reproduce, hypothesise, instrument, fix, regression-test. |
+| `tech-debt` | Audits a TS/JS codebase for duplication, architecture debt, testing gaps, dead code and doc rot. |
+| `update-deps` | Bumps all npm deps to latest (majors included), fixes mechanical breakage, lands one `chore(deps)` commit. |
+| `changelog` | Writes a product-voice changelog entry from merged commits and prepends it to `CHANGELOG.md`. |
+
+### Meta
+
+| Skill | What it does |
+| --- | --- |
+| `handoff` | Compacts the session into a handoff doc for a fresh session or another agent. |
+| `write-skill` | Creates or edits a skill, and decides whether it belongs here or in a repo's `.claude/skills/`. |
 
 ## Install
 
