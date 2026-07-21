@@ -1,0 +1,6 @@
+{
+  "name": "workflow",
+  "version": "0.1.0",
+  "description": "Unified delivery workflow: brainstorm → PRD or ticket → issues → implement → PR, plus maintenance (debug, tech-debt, update-deps, changelog) and meta (handoff, write-skill).",
+  "author": { "name": "Maxime Stevenot" }
+}

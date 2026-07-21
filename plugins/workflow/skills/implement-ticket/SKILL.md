@@ -1,0 +1,53 @@
+---
+name: implement-ticket
+description: Implement a Linear issue end-to-end — fetch the ticket, isolate the work in a worktree and branch, plan, implement, verify, then push the branch and open the PR linked to the issue. Use when the user asks to implement, work on, or pick up a Linear ticket or issue.
+argument-hint: "<ticket id or URL, e.g. BW-42>"
+---
+
+# Implement Ticket
+
+End-to-end: ticket → code → green checks → pushed branch → open PR → Linear updated.
+
+## 1. Fetch and understand
+
+- Fetch the issue (`get_issue`), its discussion (`list_comments`), and attached mockups (`extract_images`). No ticket given → ask which one.
+- Extract: goal, scope, design decisions already made, acceptance criteria. **The acceptance criteria are the contract.**
+- Summarize your understanding in 3–5 bullets. Ask about real ambiguities only — don't re-litigate what the ticket already decides.
+
+## 2. Isolate the work
+
+- `git fetch origin` so you branch from an up-to-date default branch.
+- Create an isolated workspace: prefer the harness's native worktree tool when available; otherwise `git worktree add ../<repo>-<ticket-id> -b <branch> origin/<default>`.
+- Branch name: use Linear's suggested branch name from the issue when available; otherwise `<ticket-id-lowercase>-<short-slug>`.
+- Move the Linear issue to **In Progress** (`save_issue`).
+
+## 3. Plan
+
+- Explore the codebase. The project's `CLAUDE.md` / `AGENTS.md` tell you where things live and which conventions apply — follow them exactly.
+- Produce a step-by-step plan (use plan mode if available) and get approval before writing code, unless the change is trivial.
+
+## 4. Implement
+
+- Reuse existing patterns and utilities; match the surrounding code's style.
+- **No scope creep** — only what the ticket asks for.
+- Commit in coherent steps using the repo's commit style (check `git log --oneline -10`); include the ticket id, e.g. `feat(web): add refund timeline (BW-42)`.
+- Keep history linear: rebase on the default branch if it moved. Never create merge commits.
+
+## 5. Verify
+
+- Run the project's quality gate: its check skill if one exists (e.g. `/check-the-app`), otherwise the repo's lint / typecheck / build / test scripts. Fix root causes — never suppress — and re-run until green.
+- Walk the acceptance criteria as a checklist, noting where each is satisfied. Unmet criteria must be explained, not hidden.
+
+## 6. Push and open the PR
+
+- `git push -u origin <branch>`
+- `gh pr create` — title `<type>: <summary> (<TICKET-ID>)`; body contains:
+  - a short **what & why** summary,
+  - the **acceptance criteria checklist** with status,
+  - **test notes** (what the quality gate covered, any manual verification),
+  - the Linear magic word — `Fixes <TICKET-ID>` — so Linear links the PR and auto-closes on merge.
+- Move the Linear issue to **In Review**. Confirm the PR is attached to the issue (the GitHub integration usually does this via the branch name); if not, add the PR link as an attachment or comment.
+
+## 7. Report
+
+Finish with: the PR URL, the acceptance-criteria checklist status, the quality-gate result, and anything intentionally left out of scope.
