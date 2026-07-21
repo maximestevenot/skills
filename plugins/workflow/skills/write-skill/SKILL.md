@@ -10,7 +10,7 @@ argument-hint: "<what the skill should do>"
 
 Decide first — this determines the target directory:
 
-- **Generic across repos** (workflow, methodology, tool usage) → the personal marketplace repo (`github.com/maximestevenot/skills`, local clone `~/Sources/skills`), under `plugins/workflow/skills/<name>/`. Bump the plugin version in `plugins/workflow/.claude-plugin/plugin.json`, commit, and run `claude plugin update workflow` to pick it up.
+- **Generic across repos** (workflow, methodology, tool usage) → the personal marketplace repo (`github.com/maximestevenot/skills`, local clone `~/Sources/skills`), under `plugins/workflow/skills/<name>/`. Bump the plugin version in `plugins/workflow/.claude-plugin/plugin.json`, commit, and run `claude plugin marketplace update maxime-skills && claude plugin update workflow@maxime-skills` to pick it up.
 - **Tied to one repo's commands, paths, or conventions** → that repo's `.claude/skills/<name>/`.
 
 ## Process

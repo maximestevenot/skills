@@ -44,7 +44,7 @@ Skills auto-activate from their descriptions, or explicitly via `/workflow:<skil
 1. Edit a skill under `plugins/workflow/skills/<name>/SKILL.md` (or add one with `/workflow:write-skill`).
 2. Bump `version` in `plugins/workflow/.claude-plugin/plugin.json`.
 3. `claude plugin validate .`
-4. Commit, push, then `claude plugin update workflow` (restart the session to apply).
+4. Commit, push, then `claude plugin marketplace update maxime-skills && claude plugin update workflow@maxime-skills` (restart the session to apply).
 
 ## Principles
 
