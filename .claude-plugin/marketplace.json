@@ -6,7 +6,7 @@
     {
       "name": "workflow",
       "source": "./plugins/workflow",
-      "description": "Unified delivery workflow: brainstorm → PRD or ticket → issues → implementation through PR, plus maintenance skills (debug, tech-debt, update-deps, changelog) and meta skills (handoff, write-skill)."
+      "description": "Unified delivery workflow: brainstorm → PRD or single issue → issue breakdown → implementation through PR, plus maintenance skills (debug, tech-debt, update-deps, changelog) and meta skills (handoff, write-skill)."
     }
   ]
 }

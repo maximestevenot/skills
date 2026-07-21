@@ -55,4 +55,4 @@ Write the regression test **before** the fix, at a seam that exercises the real 
 - [ ] Original repro no longer reproduces (loop re-run) and the regression test passes
 - [ ] All `[DEBUG-...]` instrumentation removed; throwaway harnesses deleted
 - [ ] The winning hypothesis is stated in the commit/PR message so the next debugger learns
-- [ ] If the root cause was architectural (no test seam, hidden coupling): open a ticket for it now, while you have the information
+- [ ] If the root cause was architectural (no test seam, hidden coupling): open an issue for it now, while you have the information

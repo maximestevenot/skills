@@ -18,18 +18,18 @@ Turn merged commits into a **short, product/impact-oriented** entry. The audienc
 - **Lead with user impact, not engineering phases.** Good: "Shopify integration is live — merchants install in one click and every claim is auto-enriched." Bad: "Phase 1 introduces a hexagonal EcommerceAdapter port…"
 - **Collapse aggressively.** Multiple commits for one effort → one bullet; follow-ups, hot-fixes and polish belong to the feature's bullet.
 - **Rewrite subjects into plain prose.** Strip `type(scope):`, expand jargon, use the product name.
-- **A handful of bullets per bucket**, skimmable in under 30 seconds. No commit hashes, no ticket-description dumps — a trailing ticket link is enough.
+- **A handful of bullets per bucket**, skimmable in under 30 seconds. No commit hashes, no issue-description dumps — a trailing issue link is enough.
 
 ## Procedure
 
-1. `git fetch origin` and read from `origin/<default-branch>`, `--no-merges`, with bodies (tickets live there).
+1. `git fetch origin` and read from `origin/<default-branch>`, `--no-merges`, with bodies (issue references live there).
 2. **Classify** each commit into buckets, reading subject *and* body:
    - **New features** — net-new user-visible capability
    - **Product improvements** — user-visible enhancement to something existing
    - **Technical improvements** — internal only; include only substantial work (architecture, migrations, perf); skip minor refactors
    - **Fixes** — bugs a user would notice
    Exclude `chore`, `docs`, `style`, `test`, `ci`, `build`, deps bumps, and internal tooling unless clearly user-visible.
-3. **Enrich tickets lightly.** Detect the tracker prefix from commit messages (`[A-Z]+-\d+`). One `get_issue` per unique ticket to confirm title and URL; retry once on transient errors, then keep the bare ID. Never invent tickets or titles.
+3. **Enrich issues lightly.** Detect the tracker prefix from commit messages (`[A-Z]+-\d+`). One `get_issue` per unique issue to confirm title and URL; retry once on transient errors, then keep the bare ID. Never invent issues or titles.
 4. **Write bullets**: `- **<Punchy headline>.** <One or two sentences of user impact.> ([XX-42](<url>))`. Empty bucket → `_None this week._` (period mode) or omit (release mode). Nothing user-facing at all → one line saying so, and stop.
 5. **Prepend** the entry to `CHANGELOG.md` at the repo root (create with `# Changelog` if missing), newest first, directly under the header. Never rewrite older entries. `--dry-run` → print only.
 

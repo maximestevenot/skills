@@ -1,6 +1,6 @@
 ---
 name: prd-to-issues
-description: Break a PRD or plan into independently-implementable Linear issues using vertical tracer-bullet slices. Use when the user wants to convert a PRD or plan into issues, create the implementation tickets for a project, or break down work.
+description: Break a PRD or plan into independently-implementable Linear issues using vertical tracer-bullet slices. Use when the user wants to convert a PRD or plan into issues, create the implementation issues for a project, or break down work.
 argument-hint: "<Linear project, PRD document, or issue reference>"
 ---
 
@@ -57,4 +57,4 @@ Do not close or modify the parent PRD or project.
 
 ## Next step
 
-Each issue gets implemented via `/workflow:implement-ticket`.
+Each issue gets implemented via `/workflow:implement-issue`.

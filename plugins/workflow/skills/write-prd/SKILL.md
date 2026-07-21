@@ -1,6 +1,6 @@
 ---
 name: write-prd
-description: Write a PRD for a project-scale feature and publish it to the Linear project. Use when a feature spans multiple issues, after a brainstorm session, or when the user asks for a PRD, spec, or feature document at project level. For a single-issue feature sheet, use create-ticket instead.
+description: Write a PRD for a project-scale feature and publish it to the Linear project. Use when a feature spans multiple issues, after a brainstorm session, or when the user asks for a PRD, spec, or feature document at project level. For a single-issue feature sheet, use create-issue instead.
 argument-hint: "<feature name or Linear project>"
 ---
 

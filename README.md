@@ -11,11 +11,11 @@ Personal Claude Code skills marketplace — one unified product & delivery workf
                   │              │           feasibility, impacts)
           project scale      issue scale
                   │              │
-              write-prd    create-ticket    (PRD on the Linear project /
+              write-prd    create-issue    (PRD on the Linear project /
                   │              │           feature sheet in a Linear issue)
             prd-to-issues ───────┤
                                  │
-                        implement-ticket    (worktree → plan → code → checks
+                        implement-issue    (worktree → plan → code → checks
                                  │           → push → PR → Linear updated)
                                  ▼
                                 PR
@@ -37,7 +37,7 @@ For live iteration on this local clone, add the marketplace by path instead:
 /plugin marketplace add /Users/maxime.stevenot/Sources/skills
 ```
 
-Skills auto-activate from their descriptions, or explicitly via `/workflow:<skill>` (e.g. `/workflow:implement-ticket BW-42`).
+Skills auto-activate from their descriptions, or explicitly via `/workflow:<skill>` (e.g. `/workflow:implement-issue BW-42`).
 
 ## Iterate
 

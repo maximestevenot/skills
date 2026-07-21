@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Entry point for any new feature or change — interview the user one question at a time to stress-test the idea, explore feasibility and impacts against the codebase, and converge on decisions. Use when the user expresses a need, wants to brainstorm or stress-test a plan or design, or says "grill me". Ends by routing to write-prd (project-scale feature) or create-ticket (single issue).
+description: Entry point for any new feature or change — interview the user one question at a time to stress-test the idea, explore feasibility and impacts against the codebase, and converge on decisions. Use when the user expresses a need, wants to brainstorm or stress-test a plan or design, or says "grill me". Ends by routing to write-prd (project-scale feature) or create-issue (single issue).
 argument-hint: "<the need or idea to explore>"
 ---
 
@@ -39,7 +39,7 @@ Track decisions as they are made. When the branches are resolved (or the user sa
 End by proposing the right artifact:
 
 - **Project-scale feature** (several issues' worth, spans multiple areas) → `/workflow:write-prd` — a PRD on the Linear project.
-- **Single issue** (one screen, one endpoint, one behavior) → `/workflow:create-ticket` — a feature sheet in a Linear issue.
+- **Single issue** (one screen, one endpoint, one behavior) → `/workflow:create-issue` — a feature sheet in a Linear issue.
 - **Not worth an artifact** (decided against, or trivial enough to just do) → leave the summary in the conversation and say so.
 
 Don't produce the document inside this skill — hand off so the dedicated skill applies its structure to the full context you just built.
