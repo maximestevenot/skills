@@ -8,6 +8,9 @@ argument-hint: "<issue id or URL, e.g. BW-42>"
 
 End-to-end: issue → code → green checks → pushed branch → open PR → Linear updated.
 
+Running this skill is the user asking for the branch to be pushed and the PR opened — the deliverable
+is a PR URL, not a local commit. Don't stop at "ready to push" to ask for confirmation.
+
 ## 1. Fetch and understand
 
 - Fetch the issue (`get_issue`), its discussion (`list_comments`), and attached mockups (`extract_images`). No issue given → ask which one.
@@ -39,6 +42,9 @@ End-to-end: issue → code → green checks → pushed branch → open PR → Li
 - Walk the acceptance criteria as a checklist, noting where each is satisfied. Unmet criteria must be explained, not hidden.
 
 ## 6. Push and open the PR
+
+This step is the point of the skill — run it. If something blocks it (no remote, `gh` not
+authenticated, protected branch), report the error; never end the run silently without a PR.
 
 - `git push -u origin <branch>`
 - `gh pr create` — title `<type>: <summary> (<ISSUE-ID>)`; body contains:
