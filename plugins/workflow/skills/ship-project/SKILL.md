@@ -34,13 +34,7 @@ When an agent returns with a question, decide it yourself if the issue/PRD/codeb
 
 ## 4. Review (separate agent per PR)
 
-For each opened PR, launch a fresh reviewer subagent — never the implementer. It is read-only and writes nothing to the PR. It checks the diff (`gh pr diff`) against:
-
-- the issue's acceptance criteria, and scope (no creep, nothing missing);
-- correctness bugs, edge cases, tests that actually exercise the change;
-- the repo's conventions (`CLAUDE.md` / `AGENTS.md`), reuse of existing utilities.
-
-If the harness has a code-review skill, the reviewer uses it as well. It returns findings as: severity (`blocker` / `should-fix` / `nit`), `file:line`, problem, suggested fix, and whether it needs a product decision.
+For each opened PR, launch a fresh reviewer subagent — never the implementer — running `/workflow:review-pr <PR> <ISSUE-ID>`. It is read-only, writes nothing to the PR, and returns its findings report to you.
 
 ## 5. Triage findings and fix
 
