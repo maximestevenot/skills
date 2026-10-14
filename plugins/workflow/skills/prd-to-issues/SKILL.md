@@ -25,9 +25,16 @@ Each issue is a thin slice that cuts through **all** layers end-to-end (schema �
 - The first slice is the tracer bullet: the smallest path that proves the architecture end-to-end.
 - Flag slices that need a human decision (design review, architectural choice) so they aren't picked up blindly by an autonomous agent.
 
+Slices are usually implemented by parallel agents via `/workflow:ship-project`. Split for that:
+
+- **Wide over deep.** Independent slices run in parallel; a dependency chain runs serially. After the tracer bullet, aim for as many slices as possible blocked only by it.
+- **Split finer than for a human team** when it buys parallelism or a smaller PR. Don't split when the pieces would just queue up one after another on the same files — that adds rebases, not speed.
+- **Mind shared hotspots** (migrations, route/registry files, shared types, i18n): slices that all touch one are merge conflicts waiting. Note it in each slice, or sequence them explicitly.
+- **Self-contained issues.** The implementing agent never sees this conversation — every decision it needs goes in the issue.
+
 ## 4. Quiz the user
 
-Present the breakdown as a numbered list — for each slice: **title**, **blocked by**, **user stories covered**, and whether it **needs a human decision**. Ask: granularity right? dependencies correct? merge or split anything? Iterate until approved.
+Present the breakdown as a numbered list — for each slice: **title**, **blocked by**, **user stories covered**, and whether it **needs a human decision**. Then show the resulting waves (which slices can run in parallel). Ask: granularity right? dependencies correct? merge or split anything? Iterate until approved.
 
 ## 5. Publish to Linear
 
@@ -57,4 +64,4 @@ Do not close or modify the parent PRD or project.
 
 ## Next step
 
-Each issue gets implemented via `/workflow:implement-issue`.
+Each issue gets implemented via `/workflow:implement-issue`, or the whole project/milestone at once via `/workflow:ship-project`.

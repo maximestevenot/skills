@@ -11,6 +11,10 @@ End-to-end: issue → code → green checks → pushed branch → open PR → Li
 Running this skill is the user asking for the branch to be pushed and the PR opened — the deliverable
 is a PR URL, not a local commit. Don't stop at "ready to push" to ask for confirmation.
 
+**Delegated mode** — when run as a subagent by an orchestrator (e.g. `/workflow:ship-project`), you
+can't talk to the user: skip plan approval and proceed. If a real ambiguity blocks you, stop and return
+your questions instead of guessing. Your final message is the step 7 report plus branch and worktree path.
+
 ## 1. Fetch and understand
 
 - Fetch the issue (`get_issue`), its discussion (`list_comments`), and attached mockups (`extract_images`). No issue given → ask which one.
