@@ -19,11 +19,13 @@ Your own context stays lean: agents return summaries, not file dumps.
 
 Read every issue and its comments. Collect what blocks implementation — missing acceptance criteria, contradictions with the PRD, undecided product choices — and ask the user **in one batch**. Don't ask what the issue or PRD already decides.
 
-Record each answer as a comment on the Linear issue so the decision lives with it. Present the wave plan with the questions, then start.
+Record each answer as a comment on the Linear issue so the decision lives with it.
+
+Size each issue: **trivial** (copy, config, a small well-bounded fix with an obvious approach) or **standard**. Present the wave plan — with each issue's size — and the questions, then start.
 
 ## 3. Implement (parallel subagents)
 
-Launch one background subagent per issue in the current wave. Each prompt is self-contained:
+Launch one background subagent per issue in the current wave, with `model: opus` and `effort: medium` — or `model: sonnet` for a trivial issue. The issue and PRD already carry the hard thinking, and review catches the rest. Each prompt is self-contained:
 
 - the issue id, and the instruction to follow `/workflow:implement-issue` in **delegated mode**;
 - the clarifications gathered for that issue;
@@ -34,12 +36,12 @@ When an agent returns with a question, decide it yourself if the issue/PRD/codeb
 
 ## 4. Review (separate agent per PR)
 
-For each opened PR, launch a fresh reviewer subagent — never the implementer — running `/workflow:review-pr <PR> <ISSUE-ID>`. It is read-only, writes nothing to the PR, and returns its findings report to you.
+For each opened PR, launch a fresh reviewer subagent at the default model and effort — never the implementer — running `/workflow:review-pr <PR> <ISSUE-ID>`. It is read-only, writes nothing to the PR, and returns its findings report to you.
 
 ## 5. Triage findings and fix
 
 You own the triage. For each finding: **apply**, **skip** (keep a one-line reason), or **escalate** to the user (product decisions, scope changes).
-Send the findings to apply to the original implementer (`SendMessage`; if it is gone, a new agent working in the same worktree). The fixes must pass the quality gate before the agent pushes. Re-review only if the fixes were substantial.
+Send the findings to apply to the original implementer (`SendMessage`; if it is gone, a new agent working in the same worktree, same model and effort). The fixes must pass the quality gate before the agent pushes. Re-review only if the fixes were substantial, and only the fix commits: `/workflow:review-pr <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD`, passing the list of applied findings.
 
 ## 6. Report and wait for the go
 
@@ -49,12 +51,15 @@ Stop here. Merging starts only on the user's explicit go — which may cover all
 
 ## 7. Merge (after the go)
 
-Order: dependency order first, then the PRs least likely to conflict. For each PR, one at a time:
+Order: dependency order first, then the PRs least likely to conflict. For each PR, one at a time, delegate steps 1–4 to a `model: sonnet` agent working in the PR's worktree. It returns either "pushed, CI green" or the blocker — it never resolves a non-mechanical conflict or a red CI on its own.
 
-1. `git fetch origin`; in the PR's worktree, rebase onto the up-to-date default branch (a stacked PR: rebase onto the default branch once its parent is merged, and retarget it with `gh pr edit --base`).
-2. Resolve conflicts preserving the intent of both sides. Non-trivial conflicts → delegate to an agent with both issues as context. A conflict that is really a product choice → ask the user.
+1. `git fetch origin`; rebase onto the up-to-date default branch (a stacked PR: rebase onto the default branch once its parent is merged, and retarget it with `gh pr edit --base`).
+2. Mechanical conflicts (imports, lockfiles, adjacent edits) → resolve preserving both sides. Anything else → return it. You then delegate it to an `opus` agent with both issues as context, or ask the user if it is really a product choice.
 3. Run the quality gate, then `git push --force-with-lease`.
-4. Wait for CI green (`gh pr checks --watch`). Red → fix the root cause (delegate), never bypass.
+4. Wait for CI green (`gh pr checks --watch`). Red → return the failure; you delegate the root-cause fix, never bypass.
+
+Then you:
+
 5. Merge with the planned method and `--delete-branch`. **Never a merge commit.**
    - `--rebase` when every commit is a clean, self-contained conventional commit worth keeping;
    - `--squash` when the history has fixups, review fixes, or WIP noise;

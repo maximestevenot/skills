@@ -12,7 +12,7 @@ Running this skill is the user asking for the branch to be pushed and the PR ope
 is a PR URL, not a local commit. Don't stop at "ready to push" to ask for confirmation.
 
 **Delegated mode** — when run as a subagent by an orchestrator (e.g. `/workflow:ship-project`), you
-can't talk to the user: skip plan approval and proceed. Skip step 6 — the orchestrator runs the review.
+can't talk to the user: no plan mode and no plan approval — plan in a few lines, then implement. Skip step 6 — the orchestrator runs the review.
 If a real ambiguity blocks you, stop and return your questions instead of guessing. Your final message
 is the step 8 report plus branch and worktree path.
 
@@ -32,6 +32,7 @@ is the step 8 report plus branch and worktree path.
 ## 3. Plan
 
 - Explore the codebase. The project's `CLAUDE.md` / `AGENTS.md` tell you where things live and which conventions apply — follow them exactly.
+- On a large codebase, if you can launch subagents, delegate the search to an `Explore` agent (`model: sonnet`): it returns the files to touch, the patterns to follow, and the utilities to reuse — not file dumps. Wait for its report before planning — a background agent's result arrives later as a notification.
 - Produce a step-by-step plan (use plan mode if available) and get approval before writing code, unless the change is trivial.
 
 ## 4. Implement
@@ -44,6 +45,7 @@ is the step 8 report plus branch and worktree path.
 ## 5. Verify
 
 - Run the project's quality gate: its check skill if one exists (e.g. `/check-the-app`), otherwise the repo's lint / typecheck / build / test scripts. Fix root causes — never suppress — and re-run until green.
+- If you can launch subagents, have a `model: haiku` agent run the gate and return only the failures, grouped and deduplicated; you do the fixing.
 - Walk the acceptance criteria as a checklist, noting where each is satisfied. Unmet criteria must be explained, not hidden.
 
 ## 6. Review

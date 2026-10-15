@@ -1,7 +1,7 @@
 ---
 name: review-pr
 description: Review a PR or branch diff — runs the built-in code-review for bugs, then adds the contract (acceptance criteria, scope, tests) and the tech debt the change introduces (architecture, abstractions, duplication, consistency) — and returns triaged findings without writing to the PR. Use when the user asks to review a PR, branch, or diff, or when implement-issue or ship-project needs an independent review.
-argument-hint: "<PR number/URL or branch> [Linear issue id]"
+argument-hint: "<PR number/URL or branch> [Linear issue id] [--range <sha>..<sha>]"
 ---
 
 # Review PR
@@ -15,12 +15,13 @@ Best run in a fresh context (a subagent), not by the agent that wrote the code.
 ## 1. Gather context
 
 - The diff: `gh pr diff <pr>` or `git diff origin/<default>...<branch>`. Read touched files in full where the diff alone doesn't show the impact.
+- `--range` given (re-review after fixes): review only `git diff <range>`, and check that each previously applied finding the caller lists is actually fixed.
 - The contract: the linked Linear issue (from the argument, the PR body's `Fixes <ID>`, or the branch name) — its acceptance criteria and recorded decisions.
 - The conventions: `CLAUDE.md` / `AGENTS.md` (root and touched directories), and how neighboring code solves the same problems.
 
 ## 2. Bug pass — delegate to `/code-review`
 
-Run the built-in `code-review` skill on the PR or branch. It owns the correctness review; don't redo it.
+Run the built-in `code-review` skill at level `high` on the PR or branch (`/code-review high <target>`) — always pass the level, never inherit it. It owns the correctness review; don't redo it.
 
 - Never pass `--comment` or `--fix`, and never use a review command that posts to the PR (e.g. the `code-review:code-review` plugin).
 - If it's unavailable or can't run in this context, do the bug pass yourself: logic errors, edge cases, broken callers, security, history (does the change undo a past fix?), invariants stated in code comments.
