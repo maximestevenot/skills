@@ -50,7 +50,9 @@ is the step 8 report plus branch and worktree path.
 
 ## 6. Review
 
-- Launch a fresh subagent to run `/workflow:review-pr` on the branch with the issue id — a context that didn't write the code. Skip only for trivial changes or if the user says so.
+- Run both reviews on the branch — each launches its own fresh agents, a context that didn't write the code. Skip only for trivial changes or if the user says so.
+  - `/code-review high <branch>` — bugs and `CLAUDE.md` compliance. Never pass `--comment` or `--fix`.
+  - `/workflow:review-acceptance <branch> <ISSUE-ID>` — criteria met and proven by tests, scope, decisions.
 - Triage each finding: **apply**, **skip** (one-line reason), or **ask the user** (product decisions, scope changes). Blockers are applied or escalated, never silently skipped.
 - Apply the fixes as their own commits, then re-run the quality gate until green.
 

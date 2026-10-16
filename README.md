@@ -20,12 +20,12 @@ They are **opinionated on purpose**. Where a choice existed, one was made rather
             prd-to-issues ───────┤
                                  │
                         implement-issue    (worktree → plan → code → checks
-                                 │           → review-pr → push → PR → Linear updated)
+                                 │           → review → push → PR → Linear updated)
                                  ▼
                                 PR
 
    ship-project: orchestrates a whole project/milestone — implement-issue
-   in parallel agents → review agent → fixes → (your go) → ordered merges
+   in parallel agents → reviews → fixes → (your go) → ordered merges
 ```
 
 **Maintenance** (periodic): `update-deps` · `changelog` · `tech-debt` · `debug`
@@ -42,7 +42,7 @@ They are **opinionated on purpose**. Where a choice existed, one was made rather
 | `create-issue` | Writes a single-deliverable Linear issue: codebase analysis, design section, acceptance criteria. |
 | `prd-to-issues` | Slices a PRD into independently-implementable issues (vertical tracer bullets). |
 | `implement-issue` | Takes an issue to a PR: worktree, branch, plan, code, checks, push, Linear updated. |
-| `review-pr` | Independent review of a PR's diff: built-in `/code-review` for bugs, plus acceptance criteria, tests, and the debt it introduces (architecture, abstraction, duplication, consistency). Never writes to the PR. |
+| `review-acceptance` | Checks a PR against its Linear issue: each acceptance criterion met and proven by a test, no scope creep, decisions respected — every finding checked by an independent refuter. Pairs with the built-in `/code-review` for bugs. Never writes to the PR. |
 | `ship-project` | Manages a whole project or milestone: parallel implement-issue agents, independent review, fix triage, questions escalated to you, then ordered merges after your go. |
 
 ### Maintenance

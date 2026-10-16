@@ -36,12 +36,15 @@ When an agent returns with a question, decide it yourself if the issue/PRD/codeb
 
 ## 4. Review (separate agent per PR)
 
-For each opened PR, launch a fresh reviewer subagent at the default model and effort — never the implementer — running `/workflow:review-pr <PR> <ISSUE-ID>`. It is read-only, writes nothing to the PR, and returns its findings report to you.
+For each opened PR, run both reviews yourself — they launch their own fresh agents, never the implementer, and subagents can't launch agents. Both are read-only and write nothing to the PR.
+
+- `/code-review high <PR>` — bugs and `CLAUDE.md` compliance. Never pass `--comment` or `--fix`.
+- `/workflow:review-acceptance <PR> <ISSUE-ID>` — criteria met and proven by tests, scope, decisions.
 
 ## 5. Triage findings and fix
 
 You own the triage. For each finding: **apply**, **skip** (keep a one-line reason), or **escalate** to the user (product decisions, scope changes).
-Send the findings to apply to the original implementer (`SendMessage`; if it is gone, a new agent working in the same worktree, same model and effort). The fixes must pass the quality gate before the agent pushes. Re-review only if the fixes were substantial, and only the fix commits: `/workflow:review-pr <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD`, passing the list of applied findings.
+Send the findings to apply to the original implementer (`SendMessage`; if it is gone, a new agent working in the same worktree, same model and effort). The fixes must pass the quality gate before the agent pushes. Re-review only if the fixes were substantial: `/code-review high <PR>`, and `/workflow:review-acceptance <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD` passing the list of applied findings.
 
 ## 6. Report and wait for the go
 
