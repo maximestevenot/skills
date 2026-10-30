@@ -7,8 +7,9 @@ argument-hint: "<PR number/URL or branch> [Linear issue id] [--range <sha>..<sha
 # Review Acceptance
 
 Judge the PR against **its issue**, not the code's general quality. Bugs and `CLAUDE.md` compliance
-belong to `/code-review` — don't redo them. Read-only: never comment on, approve, or push to the PR;
-the report goes back to whoever asked (the user or an orchestrator).
+belong to `/code-review` — don't redo them; so does commit layout, which the merge method settles.
+Read-only: never comment on, approve, or push to the PR; the report goes back to whoever asked (the
+user or an orchestrator).
 
 Run from the main session: it launches subagents, and subagents can't launch their own.
 
@@ -26,7 +27,8 @@ Launch a subagent that didn't write the code. Give it the target, the diff comma
 - **Proof** — per met criterion: the test that would fail if the change were reverted, or `none`. Skipped, deleted, or weakened existing tests are findings.
 - **Scope** — behavior the diff adds that no criterion or decision asks for.
 - **Decisions** — a recorded decision the implementation contradicts.
-- **`--range`** (re-review after fixes) — only the fix commits; for each previously applied finding the caller lists, `fixed` / `not fixed`.
+
+**`--range`** (verification after fixes) replaces the checks above: read only the fix commits; for each applied finding the caller lists, `fixed` / `not fixed`; plus any regression the fix diff introduces (a criterion that was met and no longer is, a test weakened). Nothing else — no new proof or scope findings, no review of untouched code.
 
 It reads touched files in full where the diff doesn't show the behavior, and returns the list of findings: everything not `met`-and-proven.
 
@@ -39,7 +41,7 @@ Drop refuted findings. A finding that survives is reported; one the refuter can'
 ## 4. Rank
 
 - `blocker` — criterion `missing` or `partial`, decision contradicted, existing test weakened or removed. Must be fixed before merge.
-- `should-fix` — criterion met but not proven by a test.
+- `should-fix` — criterion met but not proven by a test (never with `--range`).
 - `needs a decision` — scope creep, or a criterion too ambiguous to judge. The caller escalates it; it never blocks silently.
 
 ## 5. Report

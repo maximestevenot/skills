@@ -36,19 +36,27 @@ When an agent returns with a question, decide it yourself if the issue/PRD/codeb
 
 ## 4. Review (separate agent per PR)
 
-For each opened PR, run both reviews yourself — they launch their own fresh agents, never the implementer, and subagents can't launch agents. Both are read-only and write nothing to the PR.
+For each opened PR, run both reviews yourself — they launch their own fresh agents, never the implementer, and subagents can't launch agents. Both are read-only and write nothing to the PR. One full review per PR, never more.
 
 - `/code-review high <PR>` — bugs and `CLAUDE.md` compliance. Never pass `--comment` or `--fix`.
 - `/workflow:review-acceptance <PR> <ISSUE-ID>` — criteria met and proven by tests, scope, decisions.
 
 ## 5. Triage findings and fix
 
-You own the triage. For each finding: **apply**, **skip** (keep a one-line reason), or **escalate** to the user (product decisions, scope changes).
-Send the findings to apply to the original implementer (`SendMessage`; if it is gone, a new agent working in the same worktree, same model and effort). The fixes must pass the quality gate before the agent pushes. Re-review only if the fixes were substantial: `/code-review high <PR>`, and `/workflow:review-acceptance <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD` passing the list of applied findings.
+You own the triage. First gather what is already decided: the issue's comments, and the Review section of this PR and of its parent PRs. A finding already decided or deferred is skipped with a pointer to that decision — never re-escalated. Hold the rest to this bar — don't polish:
+
+- **apply** — a bug with a concrete failure scenario, or a criterion missing/partial.
+- **follow-up** — real but out of scope or not urgent: listed in the PR body's Review section. A deferral to another issue is also a comment on that issue (finding, source PR, reason), so its implementer sees it.
+- **skip** (one-line reason) — nits, style, commit layout, cosmetic tests or docs.
+- **escalate** to the user — product decisions, scope changes.
+
+Send the findings to apply to the original implementer in one batch (`SendMessage`; if it is gone, a new agent working in the same worktree, same model and effort), with the decisions to add to the PR's Review section. The fixes must pass the quality gate before the agent pushes. Don't rewrite history during review — fix commits get squashed at merge.
+
+Verify at most once, and only if a fix changed non-trivial behavior: `/workflow:review-acceptance <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD` with the list of applied findings. Never re-run a full `/code-review` on the PR: a single pass catches only part of the bugs, so each fresh pass finds new ones and the loop never ends — recall comes from the first round's effort, not from more rounds. What the verification still raises goes to follow-up, or to the user if it is a real blocker. There is no third round.
 
 ## 6. Report and wait for the go
 
-When every PR is reviewed and fixed, report one table: issue · PR · CI status · review outcome (applied / skipped with reason) · open points. Below it, the **merge plan**: order and method per PR (see §7).
+When every PR is reviewed and fixed, report one table: issue · PR · CI status · review rounds · review outcome (applied / follow-up / skipped with reason) · open points. Below it, the **merge plan**: order and method per PR (see §7).
 
 Stop here. Merging starts only on the user's explicit go — which may cover all PRs or a subset.
 
@@ -73,6 +81,9 @@ On any failure you can't resolve, stop and report — don't skip ahead to later 
 
 ## 8. Final report
 
-Merged PRs in order, with method; anything left open (skipped findings, unresolved PRs, follow-up issues worth creating). If the conversation gets long mid-run, `/workflow:handoff` with the status table.
+Merged PRs in order, with method; anything left open (skipped findings, unresolved PRs, follow-up findings worth an issue).
+Review metrics, to calibrate the pipeline: per reviewer (`/code-review`, `review-acceptance`), findings applied / follow-up / skipped, and review rounds per PR. A reviewer whose findings are mostly skipped is noise; a bug found after merge in reviewed code is a recall miss.
+
+If the conversation gets long mid-run, `/workflow:handoff` with the status table.
 
 Next step, if a release is going out → `/workflow:changelog`.

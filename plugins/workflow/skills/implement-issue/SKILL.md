@@ -50,11 +50,19 @@ is the step 8 report plus branch and worktree path.
 
 ## 6. Review
 
-- Run both reviews on the branch — each launches its own fresh agents, a context that didn't write the code. Skip only for trivial changes or if the user says so.
-  - `/code-review high <branch>` — bugs and `CLAUDE.md` compliance. Never pass `--comment` or `--fix`.
-  - `/workflow:review-acceptance <branch> <ISSUE-ID>` — criteria met and proven by tests, scope, decisions.
-- Triage each finding: **apply**, **skip** (one-line reason), or **ask the user** (product decisions, scope changes). Blockers are applied or escalated, never silently skipped.
-- Apply the fixes as their own commits, then re-run the quality gate until green.
+One review round, not a loop. A single pass catches only part of the bugs — recall comes from the round's effort, not from more rounds. Run both reviews on the branch — each launches its own fresh agents, a context that didn't write the code. Skip only for trivial changes or if the user says so.
+
+- `/code-review high <branch>` — bugs and `CLAUDE.md` compliance. Never pass `--comment` or `--fix`.
+- `/workflow:review-acceptance <branch> <ISSUE-ID>` — criteria met and proven by tests, scope, decisions.
+
+Before triaging, gather what is already decided: the issue's comments, and the Review section of any parent PR this branch stacks on. A finding already decided or deferred is skipped with a pointer to that decision — never re-raised. Triage the rest against this bar:
+
+- **apply** — a bug with a concrete failure scenario, or a criterion missing/partial.
+- **follow-up** — real but out of scope or not urgent: listed in the PR body.
+- **skip** (one-line reason) — nits, style, commit layout, cosmetic tests or docs.
+- **ask the user** — product decisions, scope changes. Blockers are applied or escalated, never silently skipped.
+
+Apply the fixes as their own commits, then re-run the quality gate until green. Verify only if a fix changed non-trivial behavior: `/workflow:review-acceptance <branch> <ISSUE-ID> --range <sha-before-fixes>..HEAD` with the applied findings. Never re-run a full `/code-review`. What it still raises goes to follow-up or the user — there is no third round.
 
 ## 7. Push and open the PR
 
@@ -66,7 +74,7 @@ authenticated, protected branch), report the error; never end the run silently w
   - a short **what & why** summary,
   - the **acceptance criteria checklist** with status,
   - **test notes** (what the quality gate covered, any manual verification),
-  - a **review summary** — findings applied, and skipped with the reason,
+  - a **Review** section — findings applied, skipped with the reason, follow-ups, and deferrals to another issue. It is the decision record later reviews and stacked PRs triage against,
   - the Linear magic word — `Fixes <ISSUE-ID>` — so Linear links the PR and auto-closes on merge.
 - Move the Linear issue to **In Review**. Confirm the PR is attached to the issue (the GitHub integration usually does this via the branch name); if not, add the PR link as an attachment or comment.
 
