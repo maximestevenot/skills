@@ -18,19 +18,20 @@ Produce one well-structured Linear issue. The issue is the deliverable — write
 
 ## Issue structure
 
+Short: an implementer reads it in a minute. Written in English, even when the conversation is in another language.
+
 ### Title
 Under 80 characters, business-oriented, action verb first: "Add", "Replace", "Fix", "Remove".
 
 ### Overview
-**What** we aim to achieve and **why** — readable by non-technical stakeholders. Include the problem or opportunity, the expected outcome, and the high-level scope (what's in, what's out).
+2–3 sentences: **what** we aim to achieve and **why**, readable by non-technical stakeholders, with what's in and out of scope.
 
 ### Design
-**How** it will be implemented — detailed principles, no code. As relevant: data model changes, API changes, UI/UX changes, shared schema changes, business logic, migration strategy. Use tables for enum values, field mappings, and state transitions.
+**How**, as a few bullets of decisions — no code, no step-by-step plan. Only what applies: data model, API, UI/UX, shared schema, business rules, migration. A table only for enum values, field mappings or state transitions.
 
 ### Acceptance criteria
-A checklist of verifiable conditions. Each criterion is **specific**, **testable**, and **independent** of unstated assumptions.
+2–3 verifiable conditions, each **specific** and **testable** — the contract the PR is reviewed against.
 
-## Notes
+## Next step
 
-- Quality over speed: a well-written issue pays for itself at implementation time.
-- Next step, when the time comes → `/workflow:implement-issue`.
+When the time comes → `/workflow:implement-issue`.

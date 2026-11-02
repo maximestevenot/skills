@@ -19,9 +19,13 @@ Your own context stays lean: agents return summaries, not file dumps.
 
 Read every issue and its comments. Collect what blocks implementation — missing acceptance criteria, contradictions with the PRD, undecided product choices — and ask the user **in one batch**. Don't ask what the issue or PRD already decides.
 
-Record each answer as a comment on the Linear issue so the decision lives with it.
+Record each answer as a comment on the Linear issue (in English) so the decision lives with it.
 
-Size each issue: **trivial** (copy, config, a small well-bounded fix with an obvious approach) or **standard**. Present the wave plan — with each issue's size — and the questions, then start.
+Size each issue: **trivial** (copy, config, a small well-bounded fix with an obvious approach) or **standard**. An issue with a large scope may ship as several stacked PRs — propose it, the user decides.
+
+Set the **stakes** for the run: **production**, or **spike/prototype** (code that exists to produce evidence, not to last). It sets the review depth in §5.
+
+Present the global plan — waves, dependencies, shared hotspots likely to conflict, each issue's size, the stakes — with the questions, and wait until the plan and decisions are settled with the user. No issue starts before that.
 
 ## 3. Implement (parallel subagents)
 
@@ -30,7 +34,10 @@ Launch one background subagent per issue in the current wave, with `model: opus`
 - the issue id, and the instruction to follow `/workflow:implement-issue` in **delegated mode**;
 - the clarifications gathered for that issue;
 - for an issue stacked on an unmerged dependency: the base branch to start from, and that its PR targets that branch;
+- the worktree rule: `git worktree add .claude/worktrees/<short-name> -b <branch> <base>`, absolute paths, never `EnterWorktree`/`ExitWorktree` — in a parallel run it moves the shared session's directory and locks the other agents out of their worktrees;
 - the return format: PR URL, branch, worktree path, acceptance-criteria checklist, quality-gate result, open questions or blockers.
+
+If an agent moved the session anyway, `ExitWorktree({action: "keep"})` from your session restores the repo root without removing anything.
 
 When an agent returns with a question, decide it yourself if the issue/PRD/codebase answers it; otherwise ask the user, then continue the same agent (`SendMessage`) with the answer. Start the next wave as soon as its dependencies have PRs.
 
@@ -43,7 +50,7 @@ For each opened PR, run both reviews yourself — they launch their own fresh ag
 
 ## 5. Triage findings and fix
 
-You own the triage. First gather what is already decided: the issue's comments, and the Review section of this PR and of its parent PRs. A finding already decided or deferred is skipped with a pointer to that decision — never re-escalated. Hold the rest to this bar — don't polish:
+You own the triage. First gather what is already decided: the issue's comments, and the Review section of this PR and of its parent PRs. A finding already decided or deferred is skipped with a pointer to that decision — never re-escalated. Hold the rest to this bar — don't polish. On a **spike/prototype**, *apply* narrows to what breaks the spike's results or loses data (a lost conclusion, a wrong citation, a leaked boundary, a flaky test); everything else is follow-up or skip:
 
 - **apply** — a bug with a concrete failure scenario, or a criterion missing/partial.
 - **follow-up** — real but out of scope or not urgent: listed in the PR body's Review section. A deferral to another issue is also a comment on that issue (finding, source PR, reason), so its implementer sees it.
@@ -52,7 +59,7 @@ You own the triage. First gather what is already decided: the issue's comments, 
 
 Send the findings to apply to the original implementer in one batch (`SendMessage`; if it is gone, a new agent working in the same worktree, same model and effort), with the decisions to add to the PR's Review section. The fixes must pass the quality gate before the agent pushes. Don't rewrite history during review — fix commits get squashed at merge.
 
-Verify at most once, and only if a fix changed non-trivial behavior: `/workflow:review-acceptance <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD` with the list of applied findings. Never re-run a full `/code-review` on the PR: a single pass catches only part of the bugs, so each fresh pass finds new ones and the loop never ends — recall comes from the first round's effort, not from more rounds. What the verification still raises goes to follow-up, or to the user if it is a real blocker. There is no third round.
+On a spike/prototype, stop there — no verification. On production, verify at most once, and only if a fix changed non-trivial behavior: `/workflow:review-acceptance <PR> <ISSUE-ID> --range <sha-before-fixes>..HEAD` with the list of applied findings. Never re-run a full `/code-review` on the PR: a single pass catches only part of the bugs, so each fresh pass finds new ones and the loop never ends — recall comes from the first round's effort, not from more rounds. What the verification still raises goes to follow-up, or to the user if it is a real blocker. There is no third round.
 
 ## 6. Report and wait for the go
 
@@ -64,7 +71,8 @@ Stop here. Merging starts only on the user's explicit go — which may cover all
 
 Order: dependency order first, then the PRs least likely to conflict. For each PR, one at a time, delegate steps 1–4 to a `model: sonnet` agent working in the PR's worktree. It returns either "pushed, CI green" or the blocker — it never resolves a non-mechanical conflict or a red CI on its own.
 
-1. `git fetch origin`; rebase onto the up-to-date default branch (a stacked PR: rebase onto the default branch once its parent is merged, and retarget it with `gh pr edit --base`).
+1. `git fetch origin`; rebase onto the up-to-date default branch.
+   A stacked PR, once its parent is merged: a rebase- or squash-merge rewrote the parent's commits, so re-parent with `git rebase --onto origin/<default> <old-parent-head> <branch>` (the tree should be unchanged: `git diff <old-head> <branch> --stat` is empty). Retarget with `gh pr edit --base <default>` *before* pushing — retargeting alone doesn't trigger CI, the push does. Follow the actual base chain, not branch names or phase numbers.
 2. Mechanical conflicts (imports, lockfiles, adjacent edits) → resolve preserving both sides. Anything else → return it. You then delegate it to an `opus` agent with both issues as context, or ask the user if it is really a product choice.
 3. Run the quality gate, then `git push --force-with-lease`.
 4. Wait for CI green (`gh pr checks --watch`). Red → return the failure; you delegate the root-cause fix, never bypass.

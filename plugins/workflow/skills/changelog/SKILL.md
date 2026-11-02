@@ -10,15 +10,17 @@ Turn merged commits into a **short, product/impact-oriented** entry. The audienc
 
 ## Two modes
 
-- **Release mode** (`--release`, or the user mentions a release): window = last git tag (or last `CHANGELOG.md` heading if no tags) → now. Heading is the version/tag name and date. Also print the entry standalone so it can be pasted as the GitHub Release body — offer `gh release create` only if the user asks.
-- **Period mode** (default): window = current ISO week, Monday 00:00 → now, local time. `--week YYYY-Www` targets a past week; `--since/--until` override. Heading is `## <YYYY-Www> — Week of <Mon> to <Fri>`. Compute bounds with `date`, never hardcode.
+- **Period mode** (default): window = current ISO week, Monday 00:00 → now, local time. `--week YYYY-Www` targets a past week; `--since/--until` override.
+- **Release mode** (`--release`, or the user mentions a release): window = last git tag (or last `CHANGELOG.md` entry if no tags) → now. Also print the entry standalone so it can be pasted as the GitHub Release body — offer `gh release create` only if the user asks.
+
+Headings are always the ISO week, in both modes: `## <YYYY-Www> — <Mon> to <Fri>` (e.g. `## 2026-W41 — Oct 5 to Oct 9`), never a version — the version belongs to the release, not the changelog. Compute bounds with `date`, never hardcode. If the repo's `CHANGELOG.md` already uses another heading convention, follow it.
 
 ## Voice — the part that matters
 
 - **Lead with user impact, not engineering phases.** Good: "Shopify integration is live — merchants install in one click and every claim is auto-enriched." Bad: "Phase 1 introduces a hexagonal EcommerceAdapter port…"
 - **Collapse aggressively.** Multiple commits for one effort → one bullet; follow-ups, hot-fixes and polish belong to the feature's bullet.
 - **Rewrite subjects into plain prose.** Strip `type(scope):`, expand jargon, use the product name.
-- **A handful of bullets per bucket**, skimmable in under 30 seconds. No commit hashes, no issue-description dumps — a trailing issue link is enough.
+- **A handful of bullets per bucket**, skimmable in under 30 seconds — not paragraphs recapping each phase. No commit hashes (provenance lives in git), no issue-description dumps — a trailing issue link is enough.
 
 ## Procedure
 
@@ -38,3 +40,4 @@ Turn merged commits into a **short, product/impact-oriented** entry. The audienc
 - Only commits from the default branch's remote.
 - Do not commit `CHANGELOG.md` automatically — leave it for the user to review.
 - Never amend or rewrite existing changelog history; prepend only.
+- Asked to publish the recap to a Linear cycle: the Linear MCP attaches documents to a project or issue only (`save_document`), not a cycle. Say so and skip the publish rather than post a doc that only looks attached.

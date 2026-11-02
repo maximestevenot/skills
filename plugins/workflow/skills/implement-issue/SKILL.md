@@ -25,7 +25,7 @@ is the step 8 report plus branch and worktree path.
 ## 2. Isolate the work
 
 - `git fetch origin` so you branch from an up-to-date default branch.
-- Create an isolated workspace: prefer the harness's native worktree tool when available; otherwise `git worktree add ../<repo>-<issue-id> -b <branch> origin/<default>`.
+- Create an isolated workspace where the project's `CLAUDE.md` says; by default `.claude/worktrees/<short-name>` inside the repo (gitignored). In an interactive session, prefer the harness's native worktree tool (`EnterWorktree`). In delegated mode, never call `EnterWorktree`/`ExitWorktree` — it moves the shared session's directory and locks parallel agents out of their worktrees; run `git worktree add .claude/worktrees/<short-name> -b <branch> origin/<default>` and work there with absolute paths.
 - Branch name: use Linear's suggested branch name from the issue when available; otherwise `<issue-id-lowercase>-<short-slug>`.
 - Move the Linear issue to **In Progress** (`save_issue`).
 
@@ -61,6 +61,8 @@ Before triaging, gather what is already decided: the issue's comments, and the R
 - **follow-up** — real but out of scope or not urgent: listed in the PR body.
 - **skip** (one-line reason) — nits, style, commit layout, cosmetic tests or docs.
 - **ask the user** — product decisions, scope changes. Blockers are applied or escalated, never silently skipped.
+
+Match the fix round to the stakes. On a spike or prototype, apply only what breaks its results or loses data (a wrong conclusion, a leak, a flaky test) and skip the verification below; cleanups and refactors are skipped.
 
 Apply the fixes as their own commits, then re-run the quality gate until green. Verify only if a fix changed non-trivial behavior: `/workflow:review-acceptance <branch> <ISSUE-ID> --range <sha-before-fixes>..HEAD` with the applied findings. Never re-run a full `/code-review`. What it still raises goes to follow-up or the user — there is no third round.
 

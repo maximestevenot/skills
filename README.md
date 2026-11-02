@@ -40,7 +40,7 @@ They are **opinionated on purpose**. Where a choice existed, one was made rather
 | `brainstorm` | Interviews you one question at a time to stress-test an idea against the codebase, then routes to a PRD or an issue. |
 | `write-prd` | Writes a PRD for a project-scale feature and publishes it to the Linear project. |
 | `create-issue` | Writes a single-deliverable Linear issue: codebase analysis, design section, acceptance criteria. |
-| `prd-to-issues` | Slices a PRD into independently-implementable issues (vertical tracer bullets). |
+| `prd-to-issues` | Splits a PRD into a few independently-implementable issues (coarse vertical slices, lean bodies). |
 | `implement-issue` | Takes an issue to a PR: worktree, branch, plan, code, checks, push, Linear updated. |
 | `review-acceptance` | Checks a PR against its Linear issue: each acceptance criterion met and proven by a test, no scope creep, decisions respected — every finding checked by an independent refuter. Pairs with the built-in `/code-review` for bugs. Never writes to the PR. |
 | `ship-project` | Manages a whole project or milestone: parallel implement-issue agents, independent review, fix triage, questions escalated to you, then ordered merges after your go. |

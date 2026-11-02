@@ -1,12 +1,12 @@
 ---
 name: prd-to-issues
-description: Break a PRD or plan into independently-implementable Linear issues using vertical tracer-bullet slices. Use when the user wants to convert a PRD or plan into issues, create the implementation issues for a project, or break down work.
+description: Break a PRD or plan into independently-implementable Linear issues — a coarse split into a few vertical slices. Use when the user wants to convert a PRD or plan into issues, create the implementation issues for a project, or break down work.
 argument-hint: "<Linear project, PRD document, or issue reference>"
 ---
 
 # PRD → Issues
 
-Break a PRD into thin **vertical slices** (tracer bullets), each an independently-grabbable Linear issue.
+Break a PRD into a few **vertical slices**, each an independently-grabbable Linear issue. Start coarse; split only when it pays.
 
 ## 1. Gather context
 
@@ -16,29 +16,23 @@ Work from the conversation if the PRD was just written. Otherwise fetch it: the 
 
 Issue titles and descriptions should use the project's domain vocabulary and respect recorded decisions (ADRs) in the area.
 
-## 3. Draft vertical slices
+## 3. Draft the split
 
-Each issue is a thin slice that cuts through **all** layers end-to-end (schema → API → UI → tests) — never a horizontal slice of one layer.
+Default to **one or two issues per milestone**. Propose that coarse split first; go finer only when the user asks or a piece clearly earns its own issue.
 
-- Each slice delivers a narrow but **complete** path; done means demoable or verifiable on its own.
-- Prefer many thin slices over few thick ones.
-- The first slice is the tracer bullet: the smallest path that proves the architecture end-to-end.
-- Flag slices that need a human decision (design review, architectural choice) so they aren't picked up blindly by an autonomous agent.
-
-Slices are usually implemented by parallel agents via `/workflow:ship-project`. Split for that:
-
-- **Wide over deep.** Independent slices run in parallel; a dependency chain runs serially. After the tracer bullet, aim for as many slices as possible blocked only by it.
-- **Split finer than for a human team** when it buys parallelism or a smaller PR. Don't split when the pieces would just queue up one after another on the same files — that adds rebases, not speed.
-- **Mind shared hotspots** (migrations, route/registry files, shared types, i18n): slices that all touch one are merge conflicts waiting. Note it in each slice, or sequence them explicitly.
-- **Self-contained issues.** The implementing agent never sees this conversation — every decision it needs goes in the issue.
+- Each issue is a vertical slice through every layer it needs (schema → API → UI → tests) — never one horizontal layer. Done means demoable or verifiable on its own.
+- Split further only when it buys real parallelism or a reviewable PR size. Pieces that would queue up one after another on the same files stay together — splitting adds rebases, not speed.
+- **Mind shared hotspots** (migrations, route/registry files, shared types, i18n): issues that all touch one are merge conflicts waiting. Note it, or sequence them explicitly.
+- Flag issues that need a human decision (design review, architectural choice) so an autonomous agent doesn't pick them up blindly.
+- **Self-contained issues.** The implementing agent (often a parallel one via `/workflow:ship-project`) never sees this conversation — every decision it needs goes in the issue.
 
 ## 4. Quiz the user
 
-Present the breakdown as a numbered list — for each slice: **title**, **blocked by**, **user stories covered**, and whether it **needs a human decision**. Then show the resulting waves (which slices can run in parallel). Ask: granularity right? dependencies correct? merge or split anything? Iterate until approved.
+Present the split as a numbered list — for each issue: **title**, **blocked by**, and whether it **needs a human decision** — plus which can run in parallel. Ask: merge or split anything? dependencies right? Iterate until approved.
 
 ## 5. Publish to Linear
 
-Create issues in dependency order (blockers first, so "Blocked by" can reference real identifiers). Attach each to the project, and use Linear issue relations for blocking links where possible. Issue body template:
+Create issues in dependency order (blockers first, so "Blocked by" can reference real identifiers). Attach each to the project, and use Linear issue relations for blocking links where possible. Write them in English, even when the conversation is in another language. Keep bodies short — issue body template:
 
 ```markdown
 ## Parent
@@ -47,11 +41,13 @@ Create issues in dependency order (blockers first, so "Blocked by" can reference
 
 ## What to build
 
-End-to-end behavior of this slice — not layer-by-layer implementation. No file paths or code
-snippets (they rot), except a snippet that encodes a decision better than prose (schema, state
-machine, type shape).
+A few bullets: the end-to-end behavior and the decisions the implementer needs — not
+layer-by-layer steps. No file paths or code snippets (they rot), except a snippet that encodes a
+decision better than prose (schema, state machine, type shape).
 
 ## Acceptance criteria
+
+2–3 verifiable criteria.
 
 - [ ] ...
 

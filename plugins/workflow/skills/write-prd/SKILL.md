@@ -10,30 +10,23 @@ Turn accumulated context (usually a brainstorm session) into a PRD published on 
 
 ## 1. Gather what's missing
 
-Work from the conversation first — never re-ask what has already been decided. If starting cold, gather context conversationally, most important questions first (not a questionnaire dump):
-
-- **Problem** — what problem, who experiences it, how often
-- **Users** — which segment(s)
-- **Success** — how we will know it worked
-- **Constraints** — technical, timeline, dependencies
-- **Prior art** — earlier attempts, existing partial solutions
+Work from the conversation first — never re-ask what has already been decided. If starting cold, ask the few questions that matter, most important first (not a questionnaire dump): the problem and who has it, constraints, prior attempts.
 
 Explore the codebase for the technical grounding: sketch the modules to build or modify. Prefer *deep modules* — lots of functionality behind a small, stable, testable interface. Confirm the module sketch with the user before writing.
 
 ## 2. Write the PRD
 
-Sections, in order (skip one only when genuinely empty):
+About one page. A busy reader gets the story from headers and bold text alone. Sections, in order (skip one when empty):
 
-1. **Problem statement** — 2–3 sentences from the user's perspective, grounded in evidence (support data, metrics, feedback).
-2. **Goals** — 3–5 measurable outcomes, not outputs ("cut time-to-first-claim in half", not "build the claim wizard").
-3. **Non-goals** — 3–5 explicit exclusions, each with a one-line reason. This is scope-creep insurance; it matters as much as Goals.
-4. **User stories** — "As a <actor>, I want <capability>, so that <benefit>". Numbered, grouped by persona, including edge, error, and empty states.
-5. **Requirements** — Must-have (P0) / Nice-to-have (P1) / Future (P2), each with acceptance criteria. Be ruthless: if everything is P0, nothing is.
-6. **Implementation decisions** — modules and their interfaces, schema changes, API contracts, architectural choices, resolved trade-offs. No file paths or code snippets (they rot) — except a snippet that encodes a decision better than prose can (state machine, schema, type shape).
-7. **Success metrics** — targets with a number and a time window, plus how each is measured.
-8. **Open questions** — genuinely unresolved items, each with an owner and marked blocking / non-blocking.
+1. **Problem** — 2–3 sentences: what breaks or is missing, for whom, the evidence.
+2. **Rules and decisions** — the behavior to build and the choices already made: modules and their interfaces, API contracts, resolved trade-offs. Short bullets, no file paths or code (they rot).
+3. **Schema** — only if the data model changes; a snippet is fine when it encodes the decision better than prose (schema, state machine, type shape).
+4. **Out of scope** — explicit exclusions, one line each with the reason.
+5. **Open questions** — only genuinely unresolved ones, marked blocking / non-blocking.
 
-Keep it scannable: a busy reader should get the story from headers and bold text alone.
+No user-story lists, no P0/P1/P2 tables, no success-metrics section — unless the user asks for them.
+
+Write it in English, even when the conversation is in another language.
 
 ## 3. Publish to Linear
 
